@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script>
+            // Khởi tạo theme TRƯỚC KHI React load
+            const saved = localStorage.getItem('theme');
+            const initial = saved || 'light';
+            const isDark = initial === 'dark';
+            document.documentElement.classList.toggle('dark', isDark);
+            document.documentElement.dataset.theme = initial;
+            if (!saved) localStorage.setItem('theme', initial);
+        </script>
+        <meta
+            name="description"
+            content="Tạo mã QR chuyên nghiệp với tùy chỉnh đầy đủ - Hỗ trợ logo, màu sắc và nhiều định dạng xuất"
+        />
+        <title>QR Code Generator - Tạo mã QR miễn phí</title>
+    </head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <body>
+        <div id="root"></div>
+        <script type="module" src="/src/main.jsx"></script>
+    </body>
+</html>

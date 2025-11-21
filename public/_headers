@@ -1,0 +1,16 @@
+/*
+  Content-Security-Policy: default-src 'self'; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'
+  
+  LƯU Ý VỀ CSP:
+  - 'unsafe-inline' trong style-src là cần thiết vì:
+    * QRCodeCanvas/QRCodeSVG components yêu cầu inline styles để responsive
+    * Tailwind CSS JIT mode có thể inject inline styles
+  - Rủi ro thấp: React tự động escape HTML, XSS được bảo vệ
+  - Nếu muốn strict hơn: Có thể dùng nonce/hash, nhưng cần server-side rendering
+  
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  X-XSS-Protection: 1; mode=block
+*/
