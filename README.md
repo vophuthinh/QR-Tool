@@ -6,6 +6,7 @@
 ![React](https://img.shields.io/badge/React-19.2.0-61DAFB?logo=react&style=flat-square)
 ![Vite](https://img.shields.io/badge/Vite-Rolldown-646CFF?logo=vite&style=flat-square)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?logo=tailwind-css&style=flat-square)
+![Security](https://img.shields.io/badge/Security-Audited%20✅-brightgreen?style=flat-square)
 
 ## ✨ Tính năng
 
@@ -107,6 +108,7 @@ npm run lint
 ```
 qr-tool-vite/
 ├── public/              # Static assets
+│   └── _headers        # Security headers (CSP, etc.)
 ├── src/
 │   ├── assets/         # Images, fonts
 │   ├── components/     # React components
@@ -127,7 +129,8 @@ qr-tool-vite/
 ├── package.json
 ├── vite.config.js
 ├── tailwind.config.js
-└── README.md
+├── README.md
+└── SECURITY_AUDIT_REPORT.md  # Báo cáo đánh giá bảo mật
 ```
 
 ## 🛠️ Công nghệ sử dụng
@@ -145,6 +148,24 @@ qr-tool-vite/
 - **ESLint** - Code linting
 - **Vitest** - Testing framework
 - **PostCSS** & **Autoprefixer** - CSS processing
+
+## 🔒 Bảo Mật
+
+Ứng dụng đã được kiểm tra bảo mật toàn diện và sẵn sàng cho production:
+
+- ✅ **0 vulnerabilities** trong dependencies (đã audit và fix)
+- ✅ **XSS Protection** thông qua React's built-in escaping
+- ✅ **Input Validation** đầy đủ cho URL, email, phone, coordinates
+- ✅ **File Upload Security** với giới hạn kích thước và whitelist file types
+- ✅ **Content Security Policy (CSP)** được cấu hình với security headers
+- ✅ **Local Storage** chỉ lưu UI preferences, không có sensitive data
+
+**Báo cáo bảo mật chi tiết**: Xem [SECURITY_AUDIT_REPORT.md](./SECURITY_AUDIT_REPORT.md)
+
+**Kiểm tra bảo mật**:
+```bash
+npm audit
+```
 
 ## 📖 Hướng dẫn sử dụng
 
@@ -192,6 +213,7 @@ npm run test:watch
 - `npm run lint` - Chạy ESLint
 - `npm test` - Chạy tests
 - `npm run test:watch` - Chạy tests với watch mode
+- `npm audit` - Kiểm tra vulnerabilities trong dependencies
 
 ## 🌐 Browser Support
 
@@ -228,4 +250,6 @@ Dự án được phát triển với ❤️ sử dụng React và Vite.
 
 ---
 
-**Lưu ý**: Dự án này chỉ chạy trên trình duyệt và không yêu cầu backend server. Tất cả xử lý đều diễn ra ở phía client.
+**Lưu ý**: 
+- Dự án này chỉ chạy trên trình duyệt và không yêu cầu backend server. Tất cả xử lý đều diễn ra ở phía client.
+- Ứng dụng đã được audit bảo mật và sẵn sàng cho production. Xem [SECURITY_AUDIT_REPORT.md](./SECURITY_AUDIT_REPORT.md) để biết thêm chi tiết.
