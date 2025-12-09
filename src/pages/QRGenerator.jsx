@@ -697,11 +697,11 @@ export default function QRGenerator() {
                             onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
                             aria-pressed={isDark}
                             aria-label={isDark ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
-                            className="relative inline-flex h-7 w-13 sm:h-7 sm:w-14 items-center rounded-full bg-gradient-to-r from-slate-200 to-slate-300 transition-all duration-300 hover:from-slate-300 hover:to-slate-400 shadow-sm hover:shadow-md dark:from-slate-700 dark:to-slate-600 dark:hover:from-slate-600 dark:hover:to-slate-500 ring-1 ring-slate-300/50 dark:ring-slate-600/50"
+                            className="relative inline-flex h-7 w-12 sm:h-7 sm:w-14 items-center rounded-full bg-gradient-to-r from-slate-200 to-slate-300 transition-all duration-300 hover:from-slate-300 hover:to-slate-400 shadow-sm hover:shadow-md dark:from-slate-700 dark:to-slate-600 dark:hover:from-slate-600 dark:hover:to-slate-500 ring-1 ring-slate-300/50 dark:ring-slate-600/50"
                         >
                             <span
                                 className={`inline-flex h-6 w-6 sm:h-6 sm:w-6 transform items-center justify-center rounded-full bg-white dark:bg-slate-800 shadow-md transition-all duration-300 text-sm ${
-                                    isDark ? 'translate-x-6 sm:translate-x-7' : 'translate-x-0.5'
+                                    isDark ? 'translate-x-5 sm:translate-x-7' : 'translate-x-0.5'
                                 }`}
                             >
                                 {isDark ? '🌙' : '☀️'}
