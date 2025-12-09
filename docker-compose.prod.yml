@@ -6,7 +6,7 @@ services:
     image: ghcr.io/YOUR_USERNAME/YOUR_REPO_NAME:latest
     container_name: qr-generator
     ports:
-      - "4000:80"  # Thay đổi port nếu cần
+      - "3111:80"  # Thay đổi port nếu cần
     restart: unless-stopped
     environment:
       - NODE_ENV=production

@@ -5,6 +5,8 @@ import toast from 'react-hot-toast';
 import QrPreview from '../components/QrPreview';
 import ExportPanel from '../components/ExportPanel';
 import { useTheme } from '../hooks/useTheme';
+import logoHPT from '../assets/Logo HPT.png';
+import logoHPTWhite from '../assets/Logo HPT white.png';
 import {
     isValidURL,
     isValidEmail,
@@ -647,42 +649,37 @@ export default function QRGenerator() {
 
     return (
         <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-slate-50 text-slate-900 transition-colors duration-500 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950 dark:text-slate-100 overflow-hidden">
-            <header className="flex-shrink-0 border-b border-slate-200 bg-white backdrop-blur-xl shadow-lg transition-all duration-300 dark:border-slate-800/50 dark:bg-slate-900/90">
-                <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+            <header className="flex-shrink-0 border-b border-slate-200 bg-white backdrop-blur-xl shadow-sm transition-all duration-300 dark:border-slate-800/50 dark:bg-slate-900/90">
+                <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-5 lg:px-8 py-2 sm:py-2.5">
                     <div className="flex items-center gap-3 sm:gap-4">
-                        <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-lg shadow-indigo-500/30 ring-2 ring-white dark:ring-slate-900">
-                            <svg
-                                className="h-7 w-7 sm:h-8 sm:w-8 text-white drop-shadow-lg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth={2.5}
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
-                                />
-                            </svg>
-                        </div>
-                        <div>
-                            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
-                                QR Generator Pro
+                        <img 
+                            src={isDark ? logoHPTWhite : logoHPT} 
+                            alt="HPT Logo" 
+                            className="h-12 w-12 sm:h-14 sm:w-14 object-contain flex-shrink-0 transition-opacity duration-300"
+                        />
+                        <div className="flex flex-col justify-center">
+                            <h1 className="text-base sm:text-lg lg:text-xl font-black leading-tight tracking-tight">
+                                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                                    QR Generator
+                                </span>
+                                <span className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent ml-1.5">
+                                    Pro
+                                </span>
                             </h1>
-                            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-400 font-medium mt-0.5">
+                            <p className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-medium mt-0.5 leading-tight">
                                 Tạo mã QR đa dạng & chuyên nghiệp
                             </p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="flex items-center gap-2">
                         <button
                             onClick={handleReset}
                             aria-label="Đặt lại về mặc định"
-                            className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold text-slate-800 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors duration-200"
+                            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs font-semibold text-slate-800 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors duration-200"
                         >
                             <svg
-                                className="w-4 h-4"
+                                className="w-3.5 h-3.5"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -700,11 +697,11 @@ export default function QRGenerator() {
                             onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
                             aria-pressed={isDark}
                             aria-label={isDark ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
-                            className="relative inline-flex h-9 w-16 sm:h-10 sm:w-[4.5rem] items-center rounded-full bg-gradient-to-r from-slate-200 to-slate-300 transition-all duration-300 hover:from-slate-300 hover:to-slate-400 shadow-md hover:shadow-lg dark:from-slate-700 dark:to-slate-600 dark:hover:from-slate-600 dark:hover:to-slate-500 ring-2 ring-slate-300/50 dark:ring-slate-600/50"
+                            className="relative inline-flex h-7 w-13 sm:h-7 sm:w-14 items-center rounded-full bg-gradient-to-r from-slate-200 to-slate-300 transition-all duration-300 hover:from-slate-300 hover:to-slate-400 shadow-sm hover:shadow-md dark:from-slate-700 dark:to-slate-600 dark:hover:from-slate-600 dark:hover:to-slate-500 ring-1 ring-slate-300/50 dark:ring-slate-600/50"
                         >
                             <span
-                                className={`inline-flex h-7 w-7 sm:h-8 sm:w-8 transform items-center justify-center rounded-full bg-white dark:bg-slate-800 shadow-lg transition-all duration-300 text-base sm:text-lg ${
-                                    isDark ? 'translate-x-8 sm:translate-x-9' : 'translate-x-1'
+                                className={`inline-flex h-6 w-6 sm:h-6 sm:w-6 transform items-center justify-center rounded-full bg-white dark:bg-slate-800 shadow-md transition-all duration-300 text-sm ${
+                                    isDark ? 'translate-x-6 sm:translate-x-7' : 'translate-x-0.5'
                                 }`}
                             >
                                 {isDark ? '🌙' : '☀️'}
@@ -810,7 +807,7 @@ export default function QRGenerator() {
                                             />
                                         </div>
                                         <div>
-                                            <Label htmlFor="password">🔐 Mật khẩu</Label>
+                                            <Label htmlFor="password">Mật khẩu</Label>
                                             <Input
                                                 id="password"
                                                 type="password"
@@ -907,7 +904,7 @@ export default function QRGenerator() {
                                             )}
                                         </div>
                                         <div>
-                                            <Label htmlFor="org">🏢 Công ty</Label>
+                                            <Label htmlFor="org">Công ty</Label>
                                             <Input
                                                 id="org"
                                                 placeholder="ABC Company"
