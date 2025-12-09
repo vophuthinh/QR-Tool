@@ -49,13 +49,13 @@ export async function testQRScan(canvas, includeMargin) {
             if (!includeMargin) {
                 return {
                     status: 'warning',
-                    message: '⚠️ Thiếu Quiet Zone - bật "Thêm viền" để tăng khả năng quét',
+                    message: 'Thiếu Quiet Zone - bật "Thêm viền" để tăng khả năng quét',
                 };
             }
             if (darkRatio < 0.1 || darkRatio > 0.9) {
                 return {
                     status: 'warning',
-                    message: '⚠️ Không decode được - kiểm tra màu/viền/kích thước',
+                    message: 'Không decode được - kiểm tra màu/viền/kích thước',
                 };
             }
             return { status: 'success', message: '✓ QR có vẻ hợp lệ (chưa decode được)' };

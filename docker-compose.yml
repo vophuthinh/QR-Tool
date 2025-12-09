@@ -1,0 +1,12 @@
+services:
+  qr-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qr-generator
+    ports:
+      - "4000:80" 
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+

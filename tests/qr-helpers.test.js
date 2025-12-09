@@ -51,7 +51,14 @@ describe('Validation Helpers', () => {
     it('isValidURL validates URLs', () => {
         expect(isValidURL('')).toBe(true); // Empty is valid
         expect(isValidURL('https://example.com')).toBe(true);
-        expect(isValidURL('ftp://files.local')).toBe(true);
+        expect(isValidURL('http://example.com')).toBe(true);
+        expect(isValidURL('mailto:test@example.com')).toBe(true);
+        expect(isValidURL('tel:+1234567890')).toBe(true);
+        expect(isValidURL('sms:+1234567890')).toBe(true);
+        // Only safe protocols are allowed (http, https, mailto, tel, sms)
+        expect(isValidURL('ftp://files.local')).toBe(false); // FTP not allowed
+        expect(isValidURL('javascript:alert(1)')).toBe(false); // Dangerous protocol
+        expect(isValidURL('data:text/html,<script>')).toBe(false); // Dangerous protocol
         expect(isValidURL('not-a-url')).toBe(false);
         expect(isValidURL('http://')).toBe(false);
     });

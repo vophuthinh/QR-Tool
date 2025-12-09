@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 
 /**
- * Get initial theme from localStorage or system preference
+ * Get initial theme from localStorage, default to 'light'
  */
 function getInitialTheme() {
     try {
         const saved = localStorage.getItem('theme');
         if (saved === 'dark' || saved === 'light') return saved;
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        // Mặc định là 'light' thay vì theo system preference
+        return 'light';
     } catch {
         return 'light';
     }

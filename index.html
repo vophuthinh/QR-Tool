@@ -2,10 +2,14 @@
 <html lang="vi">
     <head>
         <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <link rel="icon" type="image/png" href="/favicon-16x16.png" />
+        <link rel="manifest" href="/manifest.json" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="QR Generator" />
         <script>
-            // Khởi tạo theme TRƯỚC KHI React load
             const saved = localStorage.getItem('theme');
             const initial = saved || 'light';
             const isDark = initial === 'dark';
@@ -18,6 +22,60 @@
             content="Tạo mã QR chuyên nghiệp với tùy chỉnh đầy đủ - Hỗ trợ logo, màu sắc và nhiều định dạng xuất"
         />
         <title>QR Code Generator - Tạo mã QR miễn phí</title>
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://qr-generator.example.com/" />
+        <meta property="og:title" content="QR Code Generator - Tạo mã QR miễn phí" />
+        <meta
+            property="og:description"
+            content="Tạo mã QR chuyên nghiệp với tùy chỉnh đầy đủ - Hỗ trợ logo, màu sắc và nhiều định dạng xuất"
+        />
+        <meta property="og:image" content="/og-image.png" />
+        <meta property="og:locale" content="vi_VN" />
+        <meta property="og:site_name" content="QR Code Generator" />
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://qr-generator.example.com/" />
+        <meta name="twitter:title" content="QR Code Generator - Tạo mã QR miễn phí" />
+        <meta
+            name="twitter:description"
+            content="Tạo mã QR chuyên nghiệp với tùy chỉnh đầy đủ - Hỗ trợ logo, màu sắc và nhiều định dạng xuất"
+        />
+        <meta name="twitter:image" content="/og-image.png" />
+
+        <!-- Additional Meta Tags -->
+        <meta name="author" content="QR Generator Team" />
+        <meta name="keywords" content="QR code, QR generator, tạo mã QR, QR code maker, QR code creator" />
+        <meta name="robots" content="index, follow" />
+        <meta name="theme-color" content="#4f46e5" />
+        <link rel="canonical" href="https://qr-generator.example.com/" />
+
+        <!-- Structured Data (JSON-LD) -->
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebApplication",
+                "name": "QR Code Generator",
+                "description": "Tạo mã QR chuyên nghiệp với tùy chỉnh đầy đủ - Hỗ trợ logo, màu sắc và nhiều định dạng xuất",
+                "url": "https://qr-generator.example.com/",
+                "applicationCategory": "UtilityApplication",
+                "operatingSystem": "Web",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "VND"
+                },
+                "featureList": [
+                    "Tạo QR code cho URL, Text, Wi-Fi, vCard, Email, SMS, Điện thoại, Vị trí",
+                    "Tùy chỉnh màu sắc và kích thước",
+                    "Thêm logo vào QR code",
+                    "Xuất file PNG, JPG, SVG",
+                    "Dark mode"
+                ]
+            }
+        </script>
     </head>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
     <body>

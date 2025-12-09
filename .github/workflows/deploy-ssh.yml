@@ -1,0 +1,73 @@
+name: Deploy to Server via SSH
+
+on:
+  workflow_dispatch: # Chạy manual
+  push:
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            # Navigate to app directory
+            cd ${{ secrets.DEPLOY_PATH || '/opt/qr-generator' }}
+            
+            # Login to GitHub Container Registry (if using private repo)
+            if [ -n "${{ secrets.GHCR_TOKEN }}" ]; then
+              echo "${{ secrets.GHCR_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ secrets.GHCR_USERNAME }} --password-stdin
+            fi
+            
+            # Pull latest image
+            echo "Pulling latest Docker image..."
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest || true
+            
+            # Stop and remove old container
+            echo "Stopping old container..."
+            docker-compose down || true
+            
+            # Update docker-compose.yml if needed (optional)
+            # You can commit docker-compose.yml to repo or update it here
+            
+            # Start new container
+            echo "Starting new container..."
+            docker-compose up -d
+            
+            # Clean up unused images
+            echo "Cleaning up..."
+            docker image prune -f
+            
+            # Show running containers
+            docker ps
+
+      - name: Health check
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            sleep 5
+            curl -f http://localhost:${{ secrets.APP_PORT || 4000 }} || exit 1
+

@@ -19,7 +19,7 @@ export function useToast() {
 
     const ToastContainer = React.useCallback(
         () => (
-            <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
+            <div className="fixed top-4 right-4 z-50 flex flex-col-reverse gap-2 max-h-[calc(100vh-2rem)] overflow-y-auto">
                 {toasts.map((toast) => (
                     <Toast
                         key={toast.id}

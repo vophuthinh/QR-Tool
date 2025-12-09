@@ -1,0 +1,41 @@
+{
+  "name": "QR Code Generator",
+  "short_name": "QR Generator",
+  "description": "Tạo mã QR chuyên nghiệp với tùy chỉnh đầy đủ - Hỗ trợ logo, màu sắc và nhiều định dạng xuất",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Tạo QR Code",
+      "short_name": "QR Generator",
+      "description": "Mở trình tạo QR code",
+      "url": "/qr-generator",
+      "icons": [{ "src": "/favicon-16x16.png", "sizes": "96x96" }]
+    }
+  ]
+}
+

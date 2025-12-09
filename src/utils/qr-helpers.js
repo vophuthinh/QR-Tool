@@ -27,14 +27,90 @@ export const relLum = (hex) => {
 export const getContrastRatio = (lum1, lum2) => (Math.max(lum1, lum2) + 0.05) / (Math.min(lum1, lum2) + 0.05);
 
 /**
- * Validate URL format
+ * Sanitize input to prevent XSS and code injection
+ * Removes dangerous patterns and characters
+ * @param {string} input - Input to sanitize
+ * @returns {string} Sanitized input
+ */
+export function sanitizeInput(input) {
+    if (!input || typeof input !== 'string') return '';
+    
+    // Remove null bytes
+    let sanitized = input.replace(/\0/g, '');
+    
+    // Remove script tags and event handlers
+    sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    sanitized = sanitized.replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
+    sanitized = sanitized.replace(/on\w+\s*=\s*[^\s>]*/gi, '');
+    
+    // Remove javascript:, data:, vbscript: protocols
+    sanitized = sanitized.replace(/javascript:/gi, '');
+    sanitized = sanitized.replace(/data:text\/html/gi, '');
+    sanitized = sanitized.replace(/vbscript:/gi, '');
+    sanitized = sanitized.replace(/file:/gi, '');
+    
+    // Remove dangerous HTML entities
+    sanitized = sanitized.replace(/&#x?[0-9a-f]+;/gi, (match) => {
+        const code = parseInt(match.replace(/[&#;]/g, ''), 16);
+        // Allow safe characters (letters, numbers, common punctuation)
+        if (code >= 32 && code <= 126) return match;
+        return '';
+    });
+    
+    // Remove control characters except newline, tab, carriage return
+    sanitized = sanitized.replace(/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/g, '');
+    
+    return sanitized.trim();
+}
+
+/**
+ * Check if input contains potentially dangerous content
+ * @param {string} input - Input to check
+ * @returns {{ safe: boolean, reason?: string }}
+ */
+export function isInputSafe(input) {
+    if (!input || typeof input !== 'string') return { safe: true };
+    
+    // Check for script tags
+    if (/<script/i.test(input)) {
+        return { safe: false, reason: 'Chứa thẻ script không được phép' };
+    }
+    
+    // Check for event handlers
+    if (/on\w+\s*=/i.test(input)) {
+        return { safe: false, reason: 'Chứa event handler không được phép' };
+    }
+    
+    // Check for dangerous protocols
+    if (/javascript:|data:text\/html|vbscript:|file:/i.test(input)) {
+        return { safe: false, reason: 'Chứa protocol nguy hiểm' };
+    }
+    
+    // Check for null bytes
+    if (/\0/.test(input)) {
+        return { safe: false, reason: 'Chứa null byte không được phép' };
+    }
+    
+    return { safe: true };
+}
+
+/**
+ * Validate URL format and check for dangerous protocols
  * @param {string} url - URL to validate
  * @returns {boolean} True if valid or empty
  */
 export function isValidURL(url) {
     if (!url) return true;
     try {
-        new URL(url);
+        const urlObj = new URL(url);
+        const protocol = urlObj.protocol.toLowerCase();
+        
+        // Only allow safe protocols
+        const allowedProtocols = ['http:', 'https:', 'mailto:', 'tel:', 'sms:'];
+        if (!allowedProtocols.includes(protocol)) {
+            return false;
+        }
+        
         return true;
     } catch {
         return false;
@@ -267,4 +343,51 @@ export function estimateDimension(dataLength, ecc = 'M') {
     const v = Math.ceil((dataLength * k) / 14);
     const dim = 21 + 4 * Math.max(1, Math.min(40, v));
     return dim;
+}
+
+/**
+ * Get maximum data length for QR code based on ECC level
+ * QR Code Version 40 (maximum) capacity:
+ * - ECC L: ~7,089 bytes (alphanumeric), ~2,953 bytes (binary)
+ * - ECC M: ~5,596 bytes (alphanumeric), ~2,332 bytes (binary)
+ * - ECC Q: ~4,296 bytes (alphanumeric), ~1,790 bytes (binary)
+ * - ECC H: ~3,391 bytes (alphanumeric), ~1,413 bytes (binary)
+ * Using conservative limit for text/URL (byte mode): ~2,000 characters
+ * @param {string} ecc - ECC level ('L'/'M'/'Q'/'H')
+ * @returns {number} Maximum data length in characters
+ */
+export function getMaxDataLength(ecc = 'M') {
+    // Conservative limits for byte mode encoding (text/URL)
+    const limits = {
+        L: 2500,
+        M: 2000,
+        Q: 1500,
+        H: 1200,
+    };
+    return limits[ecc] || limits.M;
+}
+
+/**
+ * Validate QR code data length
+ * @param {string} data - Data to validate
+ * @param {string} ecc - ECC level ('L'/'M'/'Q'/'H')
+ * @returns {{ valid: boolean, maxLength: number, currentLength: number, message?: string }}
+ */
+export function validateDataLength(data, ecc = 'M') {
+    if (!data) {
+        return { valid: true, maxLength: 0, currentLength: 0 };
+    }
+
+    const maxLength = getMaxDataLength(ecc);
+    const currentLength = data.length;
+    const valid = currentLength <= maxLength;
+
+    return {
+        valid,
+        maxLength,
+        currentLength,
+        message: valid
+            ? undefined
+            : `Dữ liệu quá dài (${currentLength} ký tự). Giới hạn: ${maxLength} ký tự với ECC ${ecc}. Vui lòng rút ngắn nội dung hoặc chọn ECC L.`,
+    };
 }

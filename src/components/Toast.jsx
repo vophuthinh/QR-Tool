@@ -36,7 +36,7 @@ export default function Toast({ message, type = 'info', onClose, duration = 5000
         <div
             role="alert"
             aria-live="assertive"
-            className={`fixed top-4 right-4 z-50 max-w-md rounded-xl border-2 px-4 py-3 shadow-lg animate-slide-in ${styles[type]}`}
+            className={`relative max-w-md rounded-xl border-2 px-4 py-3 shadow-lg animate-slide-in ${styles[type]}`}
         >
             <div className="flex items-start gap-3">
                 <span className="text-xl flex-shrink-0" aria-hidden="true">

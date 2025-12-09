@@ -1,0 +1,26 @@
+# Docker Compose cho Production Server
+# Copy file này lên server và đổi tên thành docker-compose.yml
+
+services:
+  qr-generator:
+    image: ghcr.io/YOUR_USERNAME/YOUR_REPO_NAME:latest
+    container_name: qr-generator
+    ports:
+      - "4000:80"  # Thay đổi port nếu cần
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+

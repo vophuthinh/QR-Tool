@@ -42,6 +42,11 @@
 - **⚡ Chế độ chuyên sâu**: Tùy chỉnh chi tiết cho người dùng nâng cao
 - **📊 Contrast Checker**: Cảnh báo độ tương phản màu sắc
 - **🎯 Size Suggestion**: Đề xuất kích thước tối ưu dựa trên nội dung
+- **🔄 Loading States**: Hiển thị loading indicator khi tạo QR code lớn
+- **🛡️ Error Boundary**: Bắt và xử lý lỗi React một cách an toàn
+- **📱 PWA Support**: Hỗ trợ Progressive Web App, có thể cài đặt và hoạt động offline
+- **⚡ Code Splitting**: Lazy loading components để tối ưu performance
+- **🔍 SEO Optimized**: Open Graph, Twitter Cards, và structured data
 
 ## 🚀 Bắt đầu
 
@@ -108,20 +113,27 @@ npm run lint
 ```
 qr-tool-vite/
 ├── public/              # Static assets
-│   └── _headers        # Security headers (CSP, etc.)
+│   ├── _headers        # Security headers (CSP, etc.)
+│   ├── manifest.json   # PWA manifest
+│   ├── sw.js           # Service Worker
+│   └── favicon-16x16.png
 ├── src/
 │   ├── assets/         # Images, fonts
 │   ├── components/     # React components
+│   │   ├── ErrorBoundary.jsx  # Error boundary component
 │   │   ├── ExportPanel.jsx
 │   │   ├── QrPreview.jsx
 │   │   └── Toast.jsx
+│   ├── pages/          # Page components
+│   │   ├── Home.jsx     # Home page
+│   │   └── QRGenerator.jsx  # QR Generator page
 │   ├── hooks/          # Custom React hooks
 │   │   ├── useTheme.js
 │   │   └── useToast.jsx
 │   ├── utils/          # Utility functions
 │   │   ├── qr-helpers.js
 │   │   └── qr-scanner.js
-│   ├── App.jsx         # Main application component
+│   ├── App.jsx         # Main application component (routing)
 │   ├── main.jsx        # Entry point
 │   └── index.css       # Global styles
 ├── tests/              # Test files
@@ -143,6 +155,8 @@ qr-tool-vite/
 ### Libraries
 - **qrcode.react** - Thư viện tạo QR code
 - **@zxing/browser** - Thư viện quét QR code
+- **react-router-dom** - Client-side routing
+- **react-hot-toast** - Toast notifications
 
 ### Development Tools
 - **ESLint** - Code linting
@@ -154,11 +168,28 @@ qr-tool-vite/
 Ứng dụng đã được kiểm tra bảo mật toàn diện và sẵn sàng cho production:
 
 - ✅ **0 vulnerabilities** trong dependencies (đã audit và fix)
-- ✅ **XSS Protection** thông qua React's built-in escaping
-- ✅ **Input Validation** đầy đủ cho URL, email, phone, coordinates
-- ✅ **File Upload Security** với giới hạn kích thước và whitelist file types
+- ✅ **XSS Protection** đa lớp:
+  - React's built-in HTML escaping
+  - Input sanitization tự động loại bỏ script tags, event handlers, và dangerous protocols
+  - Validation nghiêm ngặt cho tất cả input fields
+- ✅ **Code Injection Prevention**:
+  - Sanitize tất cả text inputs trước khi xử lý
+  - Chặn javascript:, data:, vbscript:, file: protocols
+  - Loại bỏ null bytes và control characters
+  - Kiểm tra an toàn trước khi lưu vào state
+- ✅ **Input Validation** đầy đủ:
+  - URL validation với whitelist protocols (http, https, mailto, tel, sms)
+  - Email, phone, coordinates validation
+  - Data length validation để tránh QR code quá lớn
+  - Real-time validation với error messages
+- ✅ **File Upload Security**:
+  - Giới hạn kích thước 4MB
+  - Whitelist file types (PNG, JPG, WebP, SVG)
+  - Blob URL cleanup tự động
 - ✅ **Content Security Policy (CSP)** được cấu hình với security headers
 - ✅ **Local Storage** chỉ lưu UI preferences, không có sensitive data
+- ✅ **Error Boundary** để bắt và xử lý lỗi React một cách an toàn
+- ✅ **Data Length Protection**: Tự động kiểm tra và cảnh báo khi dữ liệu quá dài
 
 **Báo cáo bảo mật chi tiết**: Xem [SECURITY_AUDIT_REPORT.md](./SECURITY_AUDIT_REPORT.md)
 
@@ -166,6 +197,17 @@ qr-tool-vite/
 ```bash
 npm audit
 ```
+
+## 🚀 Tính năng Production-Ready
+
+Ứng dụng đã được tối ưu và sẵn sàng cho production với các tính năng sau:
+
+- ✅ **Error Boundary**: Bắt và hiển thị lỗi một cách thân thiện
+- ✅ **SEO Optimized**: Open Graph, Twitter Cards, và JSON-LD structured data
+- ✅ **Loading States**: Loading indicators khi xử lý QR code lớn
+- ✅ **Code Splitting**: Lazy loading components để giảm initial bundle size
+- ✅ **PWA Support**: Progressive Web App với service worker và manifest
+- ✅ **Performance**: Tối ưu với React.memo, useMemo, và useDebounced
 
 ## 📖 Hướng dẫn sử dụng
 
@@ -253,3 +295,5 @@ Dự án được phát triển với ❤️ sử dụng React và Vite.
 **Lưu ý**: 
 - Dự án này chỉ chạy trên trình duyệt và không yêu cầu backend server. Tất cả xử lý đều diễn ra ở phía client.
 - Ứng dụng đã được audit bảo mật và sẵn sàng cho production. Xem [SECURITY_AUDIT_REPORT.md](./SECURITY_AUDIT_REPORT.md) để biết thêm chi tiết.
+- Ứng dụng hỗ trợ PWA, có thể cài đặt trên thiết bị di động và hoạt động offline.
+- SEO đã được tối ưu với Open Graph, Twitter Cards, và structured data cho social media sharing.

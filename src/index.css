@@ -25,3 +25,42 @@
         animation: slide-in 0.3s ease-out;
     }
 }
+
+/* React Hot Toast Styling */
+.react-hot-toast {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #1e293b !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(10px);
+}
+
+.react-hot-toast.toast-success {
+    background: #f0fdf4 !important;
+    color: #166534 !important;
+    border: 1px solid #86efac !important;
+}
+
+.react-hot-toast.toast-error {
+    background: #fef2f2 !important;
+    color: #991b1b !important;
+    border: 1px solid #fca5a5 !important;
+}
+
+/* Dark Mode Support */
+.dark .react-hot-toast {
+    background: rgba(30, 41, 59, 0.95) !important;
+    color: #f1f5f9 !important;
+    border-color: rgba(148, 163, 184, 0.2) !important;
+}
+
+.dark .react-hot-toast.toast-success {
+    background: rgba(20, 83, 45, 0.9) !important;
+    color: #dcfce7 !important;
+    border-color: rgba(74, 222, 128, 0.3) !important;
+}
+
+.dark .react-hot-toast.toast-error {
+    background: rgba(153, 27, 27, 0.9) !important;
+    color: #fee2e2 !important;
+    border-color: rgba(252, 165, 165, 0.3) !important;
+}
