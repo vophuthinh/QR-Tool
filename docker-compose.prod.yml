@@ -3,7 +3,12 @@
 
 services:
   qr-generator:
-    image: ghcr.io/YOUR_USERNAME/YOUR_REPO_NAME:latest
+    # Option 1: Build từ source (khuyến nghị)
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Option 2: Dùng image từ registry (uncomment nếu đã push image)
+    # image: ghcr.io/YOUR_USERNAME/YOUR_REPO_NAME:latest
     container_name: qr-generator
     ports:
       - "3111:3111" 
