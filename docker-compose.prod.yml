@@ -6,13 +6,13 @@ services:
     image: ghcr.io/YOUR_USERNAME/YOUR_REPO_NAME:latest
     container_name: qr-generator
     ports:
-      - "3111:80"  # Thay đổi port nếu cần
+      - "3111:3111" 
     restart: unless-stopped
     environment:
       - NODE_ENV=production
     # Health check
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3111"]
       interval: 30s
       timeout: 10s
       retries: 3
