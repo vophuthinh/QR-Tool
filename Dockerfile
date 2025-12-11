@@ -21,9 +21,16 @@ FROM nginx:alpine
 # Copy built files from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy nginx configuration (optional, for SPA routing)
+# Xóa TẤT CẢ cấu hình nginx mặc định (port 80)
+RUN rm -rf /etc/nginx/conf.d/*
+
+# Đảm bảo nginx.conf không có default server block nào listen port 80
+RUN sed -i '/listen.*80/d' /etc/nginx/nginx.conf || true
+
+# Tạo nginx configuration - CHỈ listen trên port 3111, KHÔNG có port 80
 RUN echo 'server { \
     listen 3111; \
+    listen [::]:3111; \
     server_name _; \
     root /usr/share/nginx/html; \
     index index.html; \
@@ -56,7 +63,7 @@ RUN echo 'server { \
         add_header Pragma "no-cache"; \
         add_header Expires "0"; \
     } \
-}' > /etc/nginx/conf.d/default.conf
+}' > /etc/nginx/conf.d/app.conf
 
 # Expose port
 EXPOSE 3111
