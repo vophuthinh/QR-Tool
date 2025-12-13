@@ -275,7 +275,24 @@ npm audit
 
 ## 🧪 Testing
 
-Dự án sử dụng Vitest cho unit testing. Các test files nằm trong thư mục `tests/` và cùng thư mục với source files.
+Dự án sử dụng Vitest cho unit testing với **102 tests** covering core functionality.
+
+### Test Coverage
+
+- ✅ **Authentication Helpers** (44 tests): Domain validation, error handling, user info extraction
+- ✅ **MSAL Configuration** (8 tests): Config validation, initialization, error handling
+- ✅ **App Authentication** (12 tests): Login flow, logout flow, route protection, error handling
+- ✅ **QR Helpers** (14 tests): Validation, color helpers, ECC calculation
+- ✅ **QR Generation** (27 tests): All QR types, special characters, edge cases
+
+**Test Files**:
+- `tests/auth-helpers.test.js` - Authentication utilities
+- `tests/msal-config.test.js` - MSAL configuration
+- `tests/app-auth.test.js` - App authentication flow
+- `tests/qr-helpers.test.js` - QR validation and helpers
+- `src/App.test.js` - QR content generation
+
+### Running Tests
 
 ```bash
 # Chạy tất cả tests
@@ -283,7 +300,15 @@ npm test
 
 # Chạy tests với watch mode
 npm run test:watch
+
+# Chạy specific test file
+npm test -- tests/auth-helpers.test.js
+
+# Chạy với coverage report
+npm test -- --coverage
 ```
+
+**Xem chi tiết**: [TEST_COVERAGE.md](./TEST_COVERAGE.md)
 
 ## 📝 Scripts
 

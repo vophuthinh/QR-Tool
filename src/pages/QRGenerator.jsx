@@ -85,10 +85,8 @@ const escVCARD = (s = '') => s.replace(/([\\;,])/g, '\\$1').replace(/\n/g, '\\n'
 const generateQRContent = (type, data) => {
     switch (type) {
         case QR_TYPES.URL:
-            // Sanitize URL before generating QR code
             return sanitizeInput(data.url || 'https://example.com');
         case QR_TYPES.TEXT:
-            // Sanitize text before generating QR code
             return sanitizeInput(data.text || '');
         case QR_TYPES.WIFI: {
             const T = data.encryption || 'WPA';
@@ -289,18 +287,14 @@ export default function QRGenerator({ onBack }) {
     });
 
     const updateQrData = (k, v) => {
-        // Sanitize input to prevent XSS and code injection
         let sanitizedValue = v;
         
-        // Sanitize text-based fields
         if (typeof v === 'string' && ['text', 'url', 'ssid', 'password', 'name', 'firstName', 'lastName', 'org', 'vcardUrl', 'subject', 'body', 'message', 'label'].includes(k)) {
-            // Check if input is safe first
             const safetyCheck = isInputSafe(v);
             if (!safetyCheck.safe) {
                 toast.error(`Input không hợp lệ: ${safetyCheck.reason}`, { duration: 5000 });
-                return; // Don't update if unsafe
+                return;
             }
-            // Sanitize the input
             sanitizedValue = sanitizeInput(v);
         }
         
@@ -343,8 +337,6 @@ export default function QRGenerator({ onBack }) {
     const [logoUrl, setLogoUrl] = React.useState('');
     const [scanResult, setScanResult] = React.useState(null);
 
-    // Calculate scale, contrastRatio, and level after all state is declared
-    // These need to be calculated before validation useEffect which depends on level
     function scaleFromMode(mode) {
         switch (mode) {
             case 's':
@@ -367,11 +359,9 @@ export default function QRGenerator({ onBack }) {
         return pickECC(eccMode, scale, contrastOk);
     }, [eccMode, scale, contrastRatio]);
 
-    // Validation useEffect - must be after level is declared
     React.useEffect(() => {
         const e = {};
         if (qrType === QR_TYPES.URL && qrData.url) {
-            // Check for dangerous content first
             const safetyCheck = isInputSafe(qrData.url);
             if (!safetyCheck.safe) {
                 e.url = safetyCheck.reason;
@@ -387,7 +377,6 @@ export default function QRGenerator({ onBack }) {
             }
         }
         if (qrType === QR_TYPES.TEXT && qrData.text) {
-            // Check for dangerous content first
             const safetyCheck = isInputSafe(qrData.text);
             if (!safetyCheck.safe) {
                 e.text = safetyCheck.reason;
@@ -411,7 +400,6 @@ export default function QRGenerator({ onBack }) {
                 }
             }
             if (qrData.phone && !isValidPhone(qrData.phone)) e.vcardPhone = 'Số điện thoại không hợp lệ';
-            // Check other text fields for dangerous content
             ['name', 'firstName', 'lastName', 'org'].forEach((field) => {
                 if (qrData[field]) {
                     const safetyCheck = isInputSafe(qrData[field]);
@@ -423,7 +411,6 @@ export default function QRGenerator({ onBack }) {
         }
         if (qrType === QR_TYPES.EMAIL) {
             if (qrData.email && !isValidEmail(qrData.email)) e.email = 'Email không hợp lệ';
-            // Check subject and body for dangerous content
             if (qrData.subject) {
                 const safetyCheck = isInputSafe(qrData.subject);
                 if (!safetyCheck.safe) e.emailSubject = safetyCheck.reason;
@@ -517,7 +504,6 @@ export default function QRGenerator({ onBack }) {
         // Validate data length before creating QR code
         const lengthValidation = validateDataLength(text, level);
         if (!lengthValidation.valid) {
-            // Return empty QR code if data is too long to prevent crash
             return {
                 value: ' ',
                 size: sizeNormalized,

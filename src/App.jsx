@@ -6,52 +6,88 @@ import { Toaster } from 'react-hot-toast';
 import Home from './pages/Home';
 import QRGenerator from './pages/QRGenerator';
 import ErrorBoundary from './components/ErrorBoundary';
+import { 
+    validateUserDomain, 
+    getUserDisplayName, 
+    getAuthErrorMessage,
+    isUserCancelledError 
+} from './utils/auth-helpers';
 
 export default function App() {
-    const [page, setPage] = React.useState('home'); // 'home' | 'qr'
+    const [page, setPage] = React.useState('home');
 
     const { instance, accounts } = useMsal();
     const isAuthenticated = useIsAuthenticated();
-
     const user = accounts?.[0] || null;
+
+    React.useEffect(() => {
+        if (page === 'qr' && !isAuthenticated) {
+            setPage('home');
+            toast.error('Vui lòng đăng nhập để truy cập.');
+        }
+    }, [page, isAuthenticated]);
 
     const handleLogin = async () => {
         try {
+            const cachedAccounts = instance.getAllAccounts();
+            if (cachedAccounts.length > 0) {
+                try {
+                    await instance.acquireTokenSilent({
+                        scopes: ['User.Read'],
+                        account: cachedAccounts[0],
+                    });
+                    return;
+                } catch (silentError) {
+                    // Silent login failed, continue with popup
+                }
+            }
+
             await instance.loginPopup({
-                scopes: ['User.Read'], // đủ để lấy tên/email
+                scopes: ['User.Read'],
             });
         } catch (err) {
-            console.error(err);
-            toast.error('Đăng nhập Microsoft thất bại hoặc bị hủy.');
-            throw err; // để handleStart biết login fail
+            const errorMessage = getAuthErrorMessage(err);
+            if (errorMessage) {
+                toast.error(errorMessage);
+            }
+            if (!isUserCancelledError(err)) {
+                console.error('Login error:', err);
+                throw err;
+            }
         }
     };
 
     const handleStart = async () => {
-        // Bấm "Bắt đầu tạo QR"
         if (!isAuthenticated) {
             try {
                 await handleLogin();
             } catch {
-                return; // login fail thì không vào QR
+                return;
             }
         }
-        setPage('qr');
+        if (isAuthenticated || instance.getAllAccounts().length > 0) {
+            setPage('qr');
+        }
     };
 
     const handleBackHome = () => {
         setPage('home');
     };
 
-    const handleLogout = () => {
-        instance
-            .logoutPopup({
+    const handleLogout = async () => {
+        try {
+            await instance.logoutPopup({
                 postLogoutRedirectUri: window.location.origin,
-            })
-            .catch((err) => {
-                console.error(err);
-                toast.error('Đăng xuất thất bại.');
             });
+            setPage('home');
+            toast.success('Đã đăng xuất thành công.');
+        } catch (err) {
+            console.error('Logout error:', err);
+            const errorMessage = getAuthErrorMessage(err);
+            if (errorMessage) {
+                toast.error(errorMessage);
+            }
+        }
     };
 
     return (
@@ -64,8 +100,16 @@ export default function App() {
                     isAuthenticated={isAuthenticated}
                     user={user}
                 />
-            ) : (
+            ) : isAuthenticated ? (
                 <QRGenerator onBack={handleBackHome} />
+            ) : (
+                <Home
+                    onStart={handleStart}
+                    onLogin={handleLogin}
+                    onLogout={handleLogout}
+                    isAuthenticated={isAuthenticated}
+                    user={user}
+                />
             )}
             <Toaster
                 position="top-right"

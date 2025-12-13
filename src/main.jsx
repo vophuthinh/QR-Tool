@@ -6,7 +6,6 @@ import ErrorBoundary from './components/ErrorBoundary.jsx';
 import { MsalProvider } from '@azure/msal-react';
 import { msalInstance } from './auth/msalConfig.js';
 
-// Register Service Worker for PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker

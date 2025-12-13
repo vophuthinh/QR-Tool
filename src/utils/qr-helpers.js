@@ -35,29 +35,19 @@ export const getContrastRatio = (lum1, lum2) => (Math.max(lum1, lum2) + 0.05) / 
 export function sanitizeInput(input) {
     if (!input || typeof input !== 'string') return '';
     
-    // Remove null bytes
     let sanitized = input.replace(/\0/g, '');
-    
-    // Remove script tags and event handlers
     sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
     sanitized = sanitized.replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
     sanitized = sanitized.replace(/on\w+\s*=\s*[^\s>]*/gi, '');
-    
-    // Remove javascript:, data:, vbscript: protocols
     sanitized = sanitized.replace(/javascript:/gi, '');
     sanitized = sanitized.replace(/data:text\/html/gi, '');
     sanitized = sanitized.replace(/vbscript:/gi, '');
     sanitized = sanitized.replace(/file:/gi, '');
-    
-    // Remove dangerous HTML entities
     sanitized = sanitized.replace(/&#x?[0-9a-f]+;/gi, (match) => {
         const code = parseInt(match.replace(/[&#;]/g, ''), 16);
-        // Allow safe characters (letters, numbers, common punctuation)
         if (code >= 32 && code <= 126) return match;
         return '';
     });
-    
-    // Remove control characters except newline, tab, carriage return
     sanitized = sanitized.replace(/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/g, '');
     
     return sanitized.trim();
@@ -71,22 +61,18 @@ export function sanitizeInput(input) {
 export function isInputSafe(input) {
     if (!input || typeof input !== 'string') return { safe: true };
     
-    // Check for script tags
     if (/<script/i.test(input)) {
         return { safe: false, reason: 'Chứa thẻ script không được phép' };
     }
     
-    // Check for event handlers
     if (/on\w+\s*=/i.test(input)) {
         return { safe: false, reason: 'Chứa event handler không được phép' };
     }
     
-    // Check for dangerous protocols
     if (/javascript:|data:text\/html|vbscript:|file:/i.test(input)) {
         return { safe: false, reason: 'Chứa protocol nguy hiểm' };
     }
     
-    // Check for null bytes
     if (/\0/.test(input)) {
         return { safe: false, reason: 'Chứa null byte không được phép' };
     }
@@ -104,13 +90,10 @@ export function isValidURL(url) {
     try {
         const urlObj = new URL(url);
         const protocol = urlObj.protocol.toLowerCase();
-        
-        // Only allow safe protocols
         const allowedProtocols = ['http:', 'https:', 'mailto:', 'tel:', 'sms:'];
         if (!allowedProtocols.includes(protocol)) {
             return false;
         }
-        
         return true;
     } catch {
         return false;
