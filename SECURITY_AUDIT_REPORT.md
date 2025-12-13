@@ -210,6 +210,61 @@ X-XSS-Protection: 1; mode=block
 - ✅ **Image loading**: Chỉ từ `blob:` URLs hoặc user uploads
 - ✅ **Error handling**: Có xử lý CORS errors khi export canvas với external images
 
+### 2.7 Azure AD Authentication Security
+
+**Trạng thái**: ✅ **PASSED** (Đã được cải thiện toàn diện)
+
+**Biện pháp bảo mật đã triển khai**:
+
+1. ✅ **MSAL Configuration**:
+   - Sử dụng `PublicClientApplication` từ `@azure/msal-browser`
+   - Tenant-specific authority (không dùng `common` nếu có tenantId)
+   - Redirect URI được validate từ `window.location.origin`
+   - Cache location: `localStorage` (MSAL tự mã hóa)
+   - `storeAuthStateInCookie: false` để tránh CSRF
+   - `allowNativeBroker: false` cho web app
+
+2. ✅ **Route Protection**:
+   - Tự động redirect về home nếu chưa đăng nhập khi truy cập QRGenerator
+   - Kiểm tra `isAuthenticated` trước khi cho phép truy cập trang bảo vệ
+   - Double-check authentication trước khi chuyển page
+
+3. ✅ **Silent Login (SSO)**:
+   - Thử `acquireTokenSilent()` trước khi mở popup
+   - Sử dụng cached accounts để tránh popup không cần thiết
+   - Fallback về `loginPopup()` nếu silent login thất bại
+
+4. ✅ **Error Handling**:
+   - Phân biệt các loại lỗi: user cancellation, network error, interaction required
+   - Hiển thị thông báo lỗi thân thiện với người dùng
+   - Không hiển thị error khi user tự hủy đăng nhập
+   - Logging chi tiết cho debugging (chỉ trong development)
+
+5. ✅ **Session Management**:
+   - Tự động clear state sau logout thành công
+   - Redirect về home sau khi logout
+   - Token refresh được MSAL tự động xử lý
+
+6. ✅ **Input Validation**:
+   - Helper functions để validate user domain (optional, có thể enable cho HPT-only)
+   - Safe user display name extraction với fallback
+   - Config validation với warning nếu thiếu env variables
+
+**Code locations**:
+- `src/auth/msalConfig.js`: MSAL configuration và initialization
+- `src/App.jsx`: Authentication flow, route protection, error handling
+- `src/utils/auth-helpers.js`: Helper functions cho validation và error handling
+- `tests/auth-helpers.test.js`, `tests/msal-config.test.js`, `tests/app-auth.test.js`: Unit tests
+
+**Security Best Practices**:
+- ✅ Không lưu sensitive tokens trong code
+- ✅ Sử dụng environment variables cho clientId và tenantId
+- ✅ MSAL tự quản lý token lifecycle và refresh
+- ✅ Không expose credentials trong client-side code
+- ✅ Error messages không leak thông tin nhạy cảm
+
+**Kết luận**: Azure AD authentication đã được triển khai với các best practices, bao gồm route protection, silent login, error handling tốt, và session management an toàn.
+
 ---
 
 ## 📊 3. Phân Tích Rủi Ro
@@ -222,9 +277,20 @@ X-XSS-Protection: 1; mode=block
 
 **Không có** ❌
 
-### 3.3 Rủi Ro Thấp
+### 3.3.1 Azure AD Configuration
 
-1. **Outdated Major Dependencies** ✅ **ĐÃ ĐÁNH GIÁ**
+**Trạng thái**: ✅ **ĐÃ ĐÁNH GIÁ VÀ CẢI THIỆN**
+
+- **Rủi ro**: Thấp (đã được giảm thiểu)
+- **Ảnh hưởng**: Nếu thiếu config hoặc config sai, authentication sẽ không hoạt động
+- **Đã thực hiện**:
+  - ✅ Warning console nếu thiếu env variables
+  - ✅ Fallback về `common` authority nếu không có tenantId (có thể disable nếu chỉ dùng HPT)
+  - ✅ Redirect URI được validate từ `window.location.origin`
+  - ✅ Config validation helpers trong `auth-helpers.js`
+- **Kết luận**: Configuration đã được validate và có warning rõ ràng, rủi ro thấp
+
+### 3.3.2 Outdated Major Dependencies** ✅ **ĐÃ ĐÁNH GIÁ**
    - **Rủi ro**: Thấp
    - **Ảnh hưởng**: Có thể thiếu các security patches mới
    - **Đã thực hiện**: 
@@ -233,7 +299,7 @@ X-XSS-Protection: 1; mode=block
      - ⚠️ Giữ nguyên `eslint-plugin-react-hooks` v5.2.0 (v7 có breaking changes trong flat config, cần migration)
    - **Kết luận**: Minor dependencies đã được cập nhật, major dependencies được giữ nguyên vì lý do tương thích
 
-2. **CSP 'unsafe-inline'** ✅ **ĐÃ TỐI ƯU**
+### 3.3.3 CSP 'unsafe-inline'** ✅ **ĐÃ TỐI ƯU**
    - **Rủi ro**: Thấp (đã được giảm thiểu đáng kể)
    - **Ảnh hưởng**: Cho phép inline styles (có thể bị XSS nếu bị inject)
    - **Đã thực hiện**:
@@ -245,7 +311,7 @@ X-XSS-Protection: 1; mode=block
        - Validation nghiêm ngặt chặn dangerous content
    - **Kết luận**: `unsafe-inline` là cần thiết cho ứng dụng, rủi ro đã được giảm thiểu đáng kể thông qua input sanitization và được document đầy đủ
 
-3. **Data Length Limits** ✅ **ĐÃ XỬ LÝ**
+### 3.3.4 Data Length Limits** ✅ **ĐÃ XỬ LÝ**
    - **Rủi ro**: Thấp
    - **Ảnh hưởng**: QR code có giới hạn dung lượng, dữ liệu quá dài có thể gây crash
    - **Đã thực hiện**:
@@ -264,28 +330,36 @@ X-XSS-Protection: 1; mode=block
 **✅ Ứng dụng SẴN SÀNG cho production** với các điều kiện:
 
 1. ✅ **0 critical/high vulnerabilities**
-2. ✅ **Input validation đầy đủ** với sanitization tự động
-3. ✅ **XSS protection đa lớp**:
+2. ✅ **Azure AD Authentication**:
+   - Microsoft 365 SSO integration
+   - Route protection và session management
+   - Silent login với token refresh tự động
+   - Error handling và user-friendly messages
+   - Config validation và warnings
+3. ✅ **Input validation đầy đủ** với sanitization tự động
+4. ✅ **XSS protection đa lớp**:
    - React's built-in escaping
    - Input sanitization (loại bỏ script tags, event handlers, dangerous protocols)
    - Protocol whitelist cho URLs
    - Real-time safety checks
-4. ✅ **Code injection prevention**:
+5. ✅ **Code injection prevention**:
    - Sanitize tất cả text inputs
    - Chặn dangerous protocols (javascript:, data:, vbscript:, file:)
    - Loại bỏ null bytes và control characters
-5. ✅ **Data length protection**:
+6. ✅ **Data length protection**:
    - Validation độ dài dữ liệu theo ECC level
    - Tránh crash khi dữ liệu quá dài
-6. ✅ **File upload được bảo vệ**
-7. ✅ **Security headers được cấu hình**
-8. ✅ **Không lưu sensitive data**
+7. ✅ **File upload được bảo vệ**
+8. ✅ **Security headers được cấu hình**
+9. ✅ **Không lưu sensitive data**
 
 ### 4.2 Khuyến Nghị
 
 #### Ngay lập tức:
 - ✅ **Đã hoàn thành**: Fix vulnerabilities
 - ✅ **Đã hoàn thành**: Đánh giá bảo mật cơ bản
+- ✅ **Đã hoàn thành**: Triển khai Azure AD authentication với SSO
+- ✅ **Đã hoàn thành**: Route protection và session management
 - ✅ **Đã hoàn thành**: Triển khai input sanitization và XSS protection đa lớp
 - ✅ **Đã hoàn thành**: Thêm code injection prevention
 - ✅ **Đã hoàn thành**: Thêm data length validation
@@ -312,6 +386,14 @@ X-XSS-Protection: 1; mode=block
    - ✅ Protocol whitelist cho URLs
    - ✅ Data length validation để tránh crash
 
+5. ✅ **ĐÃ HOÀN THÀNH**: Azure AD Authentication Security
+   - ✅ MSAL configuration với best practices
+   - ✅ Route protection cho trang bảo vệ
+   - ✅ Silent login (SSO) với token refresh
+   - ✅ Error handling và user-friendly messages
+   - ✅ Helper functions cho validation và error handling
+   - ✅ Unit tests cho authentication flow
+
 #### Monitoring:
 - 🔄 **Chạy `npm audit` định kỳ** (hàng tuần/tháng)s
 - 🔄 **Kiểm tra dependencies mới** trước khi thêm vào
@@ -322,6 +404,7 @@ X-XSS-Protection: 1; mode=block
 ## 📝 5. Checklist Trước Khi Deploy
 
 - [x] ✅ npm audit: 0 vulnerabilities
+- [x] ✅ Azure AD Authentication: MSAL config, route protection, SSO
 - [x] ✅ Input validation: Đầy đủ với sanitization
 - [x] ✅ XSS protection: Đa lớp (React + sanitization + validation)
 - [x] ✅ Code injection prevention: Sanitize inputs, protocol whitelist
@@ -332,6 +415,7 @@ X-XSS-Protection: 1; mode=block
 - [x] ✅ Error handling: Có try-catch và Error Boundary
 - [x] ✅ Update minor dependencies (completed)
 - [x] ✅ Input sanitization functions (completed)
+- [x] ✅ Authentication security improvements (completed)
 - [ ] ⚠️ Verify security headers hoạt động trên server
 
 ---
@@ -347,6 +431,12 @@ X-XSS-Protection: 1; mode=block
 
 **Báo cáo này được tạo tự động bởi Security Audit Tool**  
 **Ngày**: 21/11/2025  
-**Cập nhật lần cuối**: 21/11/2025 
-**Phiên bản**: 1.1
+**Cập nhật lần cuối**: 21/12/2024 
+**Phiên bản**: 1.2
+
+**Các cập nhật trong phiên bản 1.2**:
+- ✅ Thêm section về Azure AD Authentication Security (2.7)
+- ✅ Cập nhật phân tích rủi ro với Azure AD configuration
+- ✅ Cập nhật checklist với authentication security
+- ✅ Code cleanup: Xóa comments không cần thiết, giữ lại JSDoc và warnings quan trọng
 

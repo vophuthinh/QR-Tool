@@ -11,7 +11,7 @@ Chỉ những phiên bản bên dưới mới được xem xét nhận bản vá
 
 | Version        | Supported | Ghi chú                               |
 | -------------- | --------- | ------------------------------------- |
-| 1.0.0       | ✅        | Nhận bugfix & security patch         |
+| 1.0.0+       | ✅        | Nhận bugfix & security patch (bao gồm Azure AD SSO)         |
 | 0.x.x và thấp hơn | ❌    | Không còn được hỗ trợ / EOL          |
 
 > 🔧 *Hãy cập nhật bảng này khi bạn phát hành phiên bản mới (ví dụ 2.x.x).*
@@ -59,22 +59,37 @@ Chúng tôi sẽ:
 
 Khi triển khai `QR-Tool` trong hệ thống của bạn, hãy lưu ý:
 
-1. **Không đưa secret trực tiếp vào QR**  
+1. **Azure AD Authentication Configuration**  
+   - ✅ **Bắt buộc**: Cấu hình `VITE_AZURE_CLIENT_ID` và `VITE_AZURE_TENANT_ID` trong file `.env`
+   - ✅ **Khuyến nghị**: Sử dụng tenant-specific authority (không dùng `common`) để giới hạn truy cập
+   - ✅ **Redirect URI**: Đảm bảo redirect URI trong Azure AD App Registration khớp với domain production
+   - ✅ **Environment Variables**: Không commit file `.env` lên Git, sử dụng secret management trong CI/CD
+   - ✅ **Scope**: Chỉ yêu cầu scope cần thiết (`User.Read` là đủ cho ứng dụng này)
+
+2. **Không đưa secret trực tiếp vào QR**  
    - Hạn chế nhúng mật khẩu, access token, private key,… vào nội dung QR ở dạng plain text.  
    - Nên dùng **token ngắn hạn** hoặc **ID/handle** rồi tra cứu qua server.
 
-2. **Sử dụng HTTPS & môi trường tin cậy**  
+3. **Sử dụng HTTPS & môi trường tin cậy**  
    - Deploy backend / web app dùng `QR-Tool` trên HTTPS,
    - Hạn chế quét / giải mã QR chứa dữ liệu nhạy cảm trên thiết bị không thuộc quản lý của công ty.
+   - Azure AD yêu cầu HTTPS cho redirect URI trong production
 
-3. **Bảo vệ khóa mã hoá / API key**  
+4. **Bảo vệ khóa mã hoá / API key**  
    - Nếu `QR-Tool` được dùng kèm chức năng mã hoá (ví dụ key AES, JWT secret,…),  
-     lưu trong biến môi trường hoặc secret manager, **không commit lên Git**.
+     lưu trong biến môi trường hoặc secret manager, **không commit lên Git**.  
    - Hạn chế nhúng key vào JavaScript phía client nếu không thực sự cần thiết.
+   - Azure AD Client ID và Tenant ID có thể public (không phải secret), nhưng nên bảo vệ trong môi trường nội bộ
 
-4. **Cập nhật phiên bản thường xuyên**  
+5. **Session Management**  
+   - MSAL tự động quản lý token lifecycle và refresh
+   - Không cần lưu tokens thủ công - MSAL cache đã được mã hóa
+   - Logout sẽ clear tất cả session data
+
+6. **Cập nhật phiên bản thường xuyên**  
    - Luôn dùng bản mới nhất trong nhánh được hỗ trợ,
    - Theo dõi changelog để cập nhật các bản vá bảo mật.
+   - Cập nhật `@azure/msal-browser` và `@azure/msal-react` khi có bản vá bảo mật
 
 ---
 
