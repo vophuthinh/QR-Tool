@@ -33,7 +33,7 @@
       "name": "Tạo QR Code",
       "short_name": "QR Generator",
       "description": "Mở trình tạo QR code",
-      "url": "/qr-generator",
+      "url": "/",
       "icons": [{ "src": "/favicon-16x16.png", "sizes": "96x96" }]
     }
   ]

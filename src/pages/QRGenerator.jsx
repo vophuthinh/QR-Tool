@@ -257,7 +257,7 @@ function useDebounced(value, delay = 200) {
     return debounced;
 }
 
-export default function QRGenerator() {
+export default function QRGenerator({ onBack }) {
     const [, setTheme, isDark] = useTheme();
     const privateMode = true;
 
@@ -673,6 +673,27 @@ export default function QRGenerator() {
                     </div>
 
                     <div className="flex items-center gap-2">
+                        {onBack && (
+                            <button
+                                onClick={onBack}
+                                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-100"
+                            >
+                                <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2.5}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                                    />
+                                </svg>
+                                <span>Về trang chủ</span>
+                            </button>
+                        )}
                         <button
                             onClick={handleReset}
                             aria-label="Đặt lại về mặc định"

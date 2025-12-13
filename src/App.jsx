@@ -1,30 +1,72 @@
-import React, { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React from 'react';
+import { useMsal, useIsAuthenticated } from '@azure/msal-react';
+import toast from 'react-hot-toast';
 import { Toaster } from 'react-hot-toast';
 
-const QRGenerator = lazy(() => import('./pages/QRGenerator'));
-
-function LoadingFallback() {
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-            <div className="flex flex-col items-center gap-4">
-                <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin dark:border-indigo-800 dark:border-t-indigo-400"></div>
-                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Đang tải...</p>
-            </div>
-        </div>
-    );
-}
+import Home from './pages/Home';
+import QRGenerator from './pages/QRGenerator';
+import ErrorBoundary from './components/ErrorBoundary';
 
 export default function App() {
+    const [page, setPage] = React.useState('home'); // 'home' | 'qr'
+
+    const { instance, accounts } = useMsal();
+    const isAuthenticated = useIsAuthenticated();
+
+    const user = accounts?.[0] || null;
+
+    const handleLogin = async () => {
+        try {
+            await instance.loginPopup({
+                scopes: ['User.Read'], // đủ để lấy tên/email
+            });
+        } catch (err) {
+            console.error(err);
+            toast.error('Đăng nhập Microsoft thất bại hoặc bị hủy.');
+            throw err; // để handleStart biết login fail
+        }
+    };
+
+    const handleStart = async () => {
+        // Bấm "Bắt đầu tạo QR"
+        if (!isAuthenticated) {
+            try {
+                await handleLogin();
+            } catch {
+                return; // login fail thì không vào QR
+            }
+        }
+        setPage('qr');
+    };
+
+    const handleBackHome = () => {
+        setPage('home');
+    };
+
+    const handleLogout = () => {
+        instance
+            .logoutPopup({
+                postLogoutRedirectUri: window.location.origin,
+            })
+            .catch((err) => {
+                console.error(err);
+                toast.error('Đăng xuất thất bại.');
+            });
+    };
+
     return (
-        <BrowserRouter>
-            <Suspense fallback={<LoadingFallback />}>
-                <Routes>
-                    <Route path="/" element={<Navigate to="/qr-generator" replace />} />
-                    <Route path="/qr-generator" element={<QRGenerator />} />
-                    <Route path="*" element={<Navigate to="/qr-generator" replace />} />
-                </Routes>
-            </Suspense>
+        <ErrorBoundary>
+            {page === 'home' ? (
+                <Home
+                    onStart={handleStart}
+                    onLogin={handleLogin}
+                    onLogout={handleLogout}
+                    isAuthenticated={isAuthenticated}
+                    user={user}
+                />
+            ) : (
+                <QRGenerator onBack={handleBackHome} />
+            )}
             <Toaster
                 position="top-right"
                 reverseOrder={false}
@@ -57,7 +99,6 @@ export default function App() {
                     },
                 }}
             />
-        </BrowserRouter>
+        </ErrorBoundary>
     );
 }
-

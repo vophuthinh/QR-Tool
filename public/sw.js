@@ -2,7 +2,6 @@
 const CACHE_NAME = 'qr-generator-v1';
 const urlsToCache = [
   '/',
-  '/qr-generator',
   '/favicon-16x16.png',
   '/manifest.json'
 ];

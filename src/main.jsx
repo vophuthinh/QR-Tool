@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
+import { MsalProvider } from '@azure/msal-react';
+import { msalInstance } from './auth/msalConfig.js';
 
 // Register Service Worker for PWA
 if ('serviceWorker' in navigator) {
@@ -25,7 +27,9 @@ if ('serviceWorker' in navigator) {
 createRoot(document.getElementById('root')).render(
     <StrictMode>
         <ErrorBoundary>
-            <App />
+            <MsalProvider instance={msalInstance}>
+                <App />
+            </MsalProvider>
         </ErrorBoundary>
     </StrictMode>,
 );
