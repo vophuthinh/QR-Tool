@@ -1,6 +1,8 @@
 # QR Generator Pro
 
-Ứng dụng tạo mã QR code chuyên nghiệp và đa dạng, được xây dựng với React và Vite. Hỗ trợ nhiều loại nội dung, tùy chỉnh đầy đủ màu sắc, kích thước, logo và định dạng xuất file.
+Công cụ tạo và quản lý mã QR chuẩn hoá cho tài liệu, chiến dịch, sự kiện và tài sản CNTT trong hệ thống doanh nghiệp HPT – thống nhất brand, bảo mật trên nền tảng Microsoft 365.
+
+Ứng dụng được xây dựng với React và Vite, hỗ trợ nhiều loại nội dung, tùy chỉnh đầy đủ màu sắc, kích thước, logo và định dạng xuất file. Tích hợp Microsoft 365 SSO để đảm bảo chỉ nhân viên nội bộ mới có thể truy cập.
 
 ![QR Generator Pro](https://img.shields.io/badge/QR-Generator%20Pro-indigo?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-19.2.0-61DAFB?logo=react&style=flat-square)
@@ -9,6 +11,14 @@
 ![Security](https://img.shields.io/badge/Security-Audited%20✅-brightgreen?style=flat-square)
 
 ## ✨ Tính năng
+
+### 🔐 Bảo mật & Xác thực
+
+- **Microsoft 365 SSO**: Đăng nhập bằng tài khoản Microsoft 365 nội bộ HPT
+- **Azure AD Integration**: Tích hợp với Azure Active Directory
+- **Single Sign-On (SSO)**: Đăng nhập một lần, truy cập toàn bộ hệ thống
+- **User Management**: Hiển thị thông tin người dùng đã đăng nhập
+- **Session Management**: Quản lý phiên đăng nhập an toàn
 
 ### 🎯 Các loại QR Code
 
@@ -27,6 +37,7 @@
 - **🎨 Màu sắc**: Tùy chỉnh màu QR và nền (hỗ trợ hex color picker)
 - **🛡️ Độ bền (ECC)**: L, M, Q, H hoặc tự động chọn theo logo
 - **🖼️ Logo**: Thêm logo vào giữa QR code với kích thước tùy chỉnh
+- **🏢 Brand Guidelines**: Tự động áp dụng màu sắc và logo theo guideline HPT
 - **📐 Định dạng**: Xuất PNG/JPG (Canvas) hoặc SVG (Vector)
 - **🔲 Margin**: Bật/tắt viền trắng (Quiet Zone)
 - **✨ Nền trong suốt**: Hỗ trợ PNG với nền trong suốt
@@ -47,6 +58,7 @@
 - **📱 PWA Support**: Hỗ trợ Progressive Web App, có thể cài đặt và hoạt động offline
 - **⚡ Code Splitting**: Lazy loading components để tối ưu performance
 - **🔍 SEO Optimized**: Open Graph, Twitter Cards, và structured data
+- **🏢 Enterprise UI**: Giao diện chuyên nghiệp, phù hợp với môi trường doanh nghiệp
 
 ## 🚀 Bắt đầu
 
@@ -54,6 +66,8 @@
 
 - Node.js >= 16.x
 - npm hoặc yarn hoặc pnpm
+- Tài khoản Microsoft 365 nội bộ HPT (để truy cập ứng dụng)
+- Azure AD App Registration (để cấu hình SSO)
 
 ### Cài đặt
 
@@ -68,13 +82,21 @@ cd qr-tool-vite
 npm install
 ```
 
-3. **Chạy development server**:
+3. **Cấu hình Microsoft 365 SSO**:
+   - Tạo Azure AD App Registration trong Azure Portal
+   - Lấy Client ID và Tenant ID
+   - Cấu hình Redirect URIs
+   - Cập nhật file `src/auth/msalConfig.js` với thông tin Azure AD của bạn
+
+4. **Chạy development server**:
 ```bash
 npm run dev
 ```
 
-4. **Mở trình duyệt**:
+5. **Mở trình duyệt**:
 Truy cập `http://localhost:5173` (hoặc port được Vite chỉ định)
+- Đăng nhập bằng tài khoản Microsoft 365 nội bộ HPT
+- Sau khi đăng nhập thành công, bạn có thể bắt đầu tạo QR code
 
 ### Build cho production
 
@@ -119,13 +141,15 @@ qr-tool-vite/
 │   └── favicon-16x16.png
 ├── src/
 │   ├── assets/         # Images, fonts
+│   ├── auth/           # Authentication configuration
+│   │   └── msalConfig.js  # Microsoft 365 SSO configuration
 │   ├── components/     # React components
 │   │   ├── ErrorBoundary.jsx  # Error boundary component
 │   │   ├── ExportPanel.jsx
 │   │   ├── QrPreview.jsx
 │   │   └── Toast.jsx
 │   ├── pages/          # Page components
-│   │   ├── Home.jsx     # Home page
+│   │   ├── Home.jsx     # Home page (Landing page với SSO)
 │   │   └── QRGenerator.jsx  # QR Generator page
 │   ├── hooks/          # Custom React hooks
 │   │   ├── useTheme.js
@@ -133,7 +157,7 @@ qr-tool-vite/
 │   ├── utils/          # Utility functions
 │   │   ├── qr-helpers.js
 │   │   └── qr-scanner.js
-│   ├── App.jsx         # Main application component (routing)
+│   ├── App.jsx         # Main application component (routing + auth)
 │   ├── main.jsx        # Entry point
 │   └── index.css       # Global styles
 ├── tests/              # Test files
@@ -157,6 +181,8 @@ qr-tool-vite/
 - **@zxing/browser** - Thư viện quét QR code
 - **react-router-dom** - Client-side routing
 - **react-hot-toast** - Toast notifications
+- **@azure/msal-browser** - Microsoft Authentication Library (MSAL) cho browser
+- **@azure/msal-react** - MSAL React integration hooks
 
 ### Development Tools
 - **ESLint** - Code linting
@@ -167,6 +193,9 @@ qr-tool-vite/
 
 Ứng dụng đã được kiểm tra bảo mật toàn diện và sẵn sàng cho production:
 
+- ✅ **Microsoft 365 SSO Authentication**: Chỉ nhân viên nội bộ HPT mới có thể truy cập
+- ✅ **Azure AD Integration**: Tích hợp với Azure Active Directory để quản lý người dùng
+- ✅ **Session Management**: Quản lý phiên đăng nhập an toàn với token refresh tự động
 - ✅ **0 vulnerabilities** trong dependencies (đã audit và fix)
 - ✅ **XSS Protection** đa lớp:
   - React's built-in HTML escaping
@@ -211,12 +240,21 @@ npm audit
 
 ## 📖 Hướng dẫn sử dụng
 
+### Đăng nhập
+
+1. Truy cập ứng dụng tại trang chủ
+2. Nhấn nút **"Đăng nhập với Microsoft"**
+3. Chọn tài khoản Microsoft 365 nội bộ HPT của bạn
+4. Xác thực và cấp quyền truy cập
+5. Sau khi đăng nhập thành công, bạn sẽ thấy tên của mình ở góc trên bên phải
+
 ### Tạo QR Code cơ bản
 
-1. Chọn loại QR code từ dropdown (URL, Text, Wi-Fi, etc.)
-2. Nhập thông tin tương ứng
-3. Xem trước QR code ở panel bên phải
-4. Tải xuống bằng nút "Tải xuống PNG" hoặc "Tải xuống SVG"
+1. Sau khi đăng nhập, nhấn nút **"Bắt đầu tạo mã QR"**
+2. Chọn loại QR code từ dropdown (URL, Text, Wi-Fi, etc.)
+3. Nhập thông tin tương ứng
+4. Xem trước QR code ở panel bên phải
+5. Tải xuống bằng nút "Tải xuống PNG" hoặc "Tải xuống SVG"
 
 ### Tùy chỉnh nâng cao (Chế độ Chuyên sâu)
 
@@ -294,6 +332,8 @@ Dự án được phát triển với ❤️ sử dụng React và Vite.
 
 **Lưu ý**: 
 - Dự án này chỉ chạy trên trình duyệt và không yêu cầu backend server. Tất cả xử lý đều diễn ra ở phía client.
+- **Yêu cầu đăng nhập**: Ứng dụng yêu cầu đăng nhập bằng tài khoản Microsoft 365 nội bộ HPT để đảm bảo bảo mật.
 - Ứng dụng đã được audit bảo mật và sẵn sàng cho production. Xem [SECURITY_AUDIT_REPORT.md](./SECURITY_AUDIT_REPORT.md) để biết thêm chi tiết.
 - Ứng dụng hỗ trợ PWA, có thể cài đặt trên thiết bị di động và hoạt động offline.
 - SEO đã được tối ưu với Open Graph, Twitter Cards, và structured data cho social media sharing.
+- Giao diện được thiết kế chuyên nghiệp, phù hợp với môi trường doanh nghiệp với brand guidelines HPT.
