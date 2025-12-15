@@ -12,6 +12,13 @@ RUN npm ci
 # Copy source code
 COPY . .
 
+# ✅ Inject env for Vite at build-time
+ARG VITE_AZURE_CLIENT_ID
+ARG VITE_AZURE_TENANT_ID
+
+ENV VITE_AZURE_CLIENT_ID=$VITE_AZURE_CLIENT_ID
+ENV VITE_AZURE_TENANT_ID=$VITE_AZURE_TENANT_ID
+
 # Build the application
 RUN npm run build
 

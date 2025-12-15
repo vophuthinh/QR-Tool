@@ -32,7 +32,7 @@ export async function testQRScan(canvas, includeMargin) {
 
         return {
             status: 'success',
-            message: `✓ QR decode thành công`,
+            message: `QR decode thành công`,
         };
     } catch {
         try {

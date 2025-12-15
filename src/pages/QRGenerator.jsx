@@ -7,6 +7,30 @@ import ExportPanel from '../components/ExportPanel';
 import { useTheme } from '../hooks/useTheme';
 import logoHPT from '../assets/Logo HPT.png';
 import logoHPTWhite from '../assets/Logo HPT white.png';
+
+const ErrorMessage = ({ message, className = '' }) => {
+    if (!message) return null;
+    return (
+        <p className={`flex items-start gap-2 text-xs text-rose-600 dark:text-rose-400 font-medium ${className}`}>
+            <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+            <span>{message}</span>
+        </p>
+    );
+};
+
+const WarningMessage = ({ message, className = '' }) => {
+    if (!message) return null;
+    return (
+        <p className={`flex items-start gap-2 text-xs text-amber-700 dark:text-amber-400 font-semibold ${className}`}>
+            <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            <span>{message}</span>
+        </p>
+    );
+};
 import {
     isValidURL,
     isValidEmail,
@@ -648,9 +672,6 @@ export default function QRGenerator({ onBack }) {
                                 <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
                                     QR Generator
                                 </span>
-                                <span className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent ml-1.5">
-                                    Pro
-                                </span>
                             </h1>
                             <p className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-medium mt-0.5 leading-tight">
                                 Tạo mã QR đa dạng & chuyên nghiệp
@@ -777,11 +798,7 @@ export default function QRGenerator({ onBack }) {
                                             onChange={(e) => updateQrData('url', e.target.value)}
                                             error={validationErrors.url}
                                         />
-                                        {validationErrors.url && (
-                                            <p className="text-xs text-rose-600 dark:text-rose-400 font-medium">
-                                                {validationErrors.url}
-                                            </p>
-                                        )}
+                                        <ErrorMessage message={validationErrors.url} />
                                     </>
                                 )}
                                 {qrType === QR_TYPES.TEXT && (
@@ -795,11 +812,7 @@ export default function QRGenerator({ onBack }) {
                                             rows={4}
                                             error={validationErrors.text}
                                         />
-                                        {validationErrors.text && (
-                                            <p className="text-xs text-rose-600 dark:text-rose-400 font-medium">
-                                                {validationErrors.text}
-                                            </p>
-                                        )}
+                                        <ErrorMessage message={validationErrors.text} />
                                     </>
                                 )}
                                 {qrType === QR_TYPES.WIFI && (
@@ -889,11 +902,7 @@ export default function QRGenerator({ onBack }) {
                                                 onChange={(e) => updateQrData('phone', e.target.value)}
                                                 error={validationErrors.vcardPhone}
                                             />
-                                            {validationErrors.vcardPhone && (
-                                                <p className="text-xs text-rose-600 dark:text-rose-400 font-medium mt-1">
-                                                    {validationErrors.vcardPhone}
-                                                </p>
-                                            )}
+                                            <ErrorMessage message={validationErrors.vcardPhone} className="mt-1" />
                                         </div>
                                         <div>
                                             <Label htmlFor="vcard-email">Email</Label>
@@ -904,11 +913,7 @@ export default function QRGenerator({ onBack }) {
                                                 onChange={(e) => updateQrData('email', e.target.value)}
                                                 error={validationErrors.vcardEmail}
                                             />
-                                            {validationErrors.vcardEmail && (
-                                                <p className="text-xs text-rose-600 dark:text-rose-400 font-medium mt-1">
-                                                    {validationErrors.vcardEmail}
-                                                </p>
-                                            )}
+                                            <ErrorMessage message={validationErrors.vcardEmail} className="mt-1" />
                                         </div>
                                         <div>
                                             <Label htmlFor="org">Công ty</Label>
@@ -928,11 +933,7 @@ export default function QRGenerator({ onBack }) {
                                                 onChange={(e) => updateQrData('vcardUrl', e.target.value)}
                                                 error={validationErrors.vcardUrl}
                                             />
-                                            {validationErrors.vcardUrl && (
-                                                <p className="text-xs text-rose-600 dark:text-rose-400 font-medium mt-1">
-                                                    {validationErrors.vcardUrl}
-                                                </p>
-                                            )}
+                                            <ErrorMessage message={validationErrors.vcardUrl} className="mt-1" />
                                         </div>
                                     </>
                                 )}
@@ -947,11 +948,7 @@ export default function QRGenerator({ onBack }) {
                                                 onChange={(e) => updateQrData('email', e.target.value)}
                                                 error={validationErrors.email}
                                             />
-                                            {validationErrors.email && (
-                                                <p className="text-xs text-rose-600 dark:text-rose-400 font-medium mt-1">
-                                                    {validationErrors.email}
-                                                </p>
-                                            )}
+                                            <ErrorMessage message={validationErrors.email} className="mt-1" />
                                         </div>
                                         <div>
                                             <Label htmlFor="subject">Tiêu đề</Label>
@@ -985,11 +982,7 @@ export default function QRGenerator({ onBack }) {
                                                 onChange={(e) => updateQrData('phone', e.target.value)}
                                                 error={validationErrors.phone}
                                             />
-                                            {validationErrors.phone && (
-                                                <p className="text-xs text-rose-600 dark:text-rose-400 font-medium mt-1">
-                                                    {validationErrors.phone}
-                                                </p>
-                                            )}
+                                            <ErrorMessage message={validationErrors.phone} className="mt-1" />
                                         </div>
                                         <div>
                                             <Label htmlFor="message">Nội dung tin nhắn</Label>
@@ -1013,11 +1006,7 @@ export default function QRGenerator({ onBack }) {
                                             onChange={(e) => updateQrData('phone', e.target.value)}
                                             error={validationErrors.phone}
                                         />
-                                        {validationErrors.phone && (
-                                            <p className="text-xs text-rose-600 dark:text-rose-400 font-medium mt-1">
-                                                {validationErrors.phone}
-                                            </p>
-                                        )}
+                                        <ErrorMessage message={validationErrors.phone} className="mt-1" />
                                     </>
                                 )}
                                 {qrType === QR_TYPES.GEO && (
@@ -1044,11 +1033,7 @@ export default function QRGenerator({ onBack }) {
                                                 />
                                             </div>
                                         </div>
-                                        {validationErrors.geo && (
-                                            <p className="text-xs text-rose-600 dark:text-rose-400 font-medium">
-                                                {validationErrors.geo}
-                                            </p>
-                                        )}
+                                        <ErrorMessage message={validationErrors.geo} />
                                         <div>
                                             <Label htmlFor="geo-label">Nhãn địa điểm</Label>
                                             <Input
@@ -1398,7 +1383,7 @@ export default function QRGenerator({ onBack }) {
                                             )}
                                             <div className="flex items-center justify-between rounded-lg bg-slate-50 dark:bg-slate-800 px-3 py-2">
                                                 <span
-                                                    className={`text-xs font-semibold ${
+                                                    className={`flex items-center gap-2 text-xs font-semibold ${
                                                         safety === 'safe'
                                                             ? 'text-emerald-600 dark:text-emerald-400'
                                                             : safety === 'caution'
@@ -1406,9 +1391,30 @@ export default function QRGenerator({ onBack }) {
                                                             : 'text-rose-600 dark:text-rose-400'
                                                     }`}
                                                 >
-                                                    {safety === 'safe' && 'An toàn'}
-                                                    {safety === 'caution' && 'Cẩn trọng'}
-                                                    {safety === 'risky' && 'Rủi ro cao'}
+                                                    {safety === 'safe' && (
+                                                        <>
+                                                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                                            </svg>
+                                                            <span>An toàn</span>
+                                                        </>
+                                                    )}
+                                                    {safety === 'caution' && (
+                                                        <>
+                                                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                            </svg>
+                                                            <span>Cẩn trọng</span>
+                                                        </>
+                                                    )}
+                                                    {safety === 'risky' && (
+                                                        <>
+                                                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                                            </svg>
+                                                            <span>Rủi ro cao</span>
+                                                        </>
+                                                    )}
                                                 </span>
                                             </div>
                                         </div>
@@ -1419,11 +1425,12 @@ export default function QRGenerator({ onBack }) {
 
                         <div className="flex-shrink-0 border-t-2 border-slate-200 dark:border-slate-800 px-4 sm:px-6 py-3 space-y-2 bg-slate-50 dark:bg-slate-800/50">
                             {contrastRatio < 4.5 && (
-                                <p className="text-xs text-amber-600 dark:text-amber-500 mb-2">
-                                    {contrastRatio < 2.5
+                                <WarningMessage 
+                                    message={contrastRatio < 2.5
                                         ? 'Màu khó quét (tương phản quá thấp)'
                                         : 'Màu có thể khó quét khi in ấn (khuyên dùng ≥ 4.5:1)'}
-                                </p>
+                                    className="mb-2 text-amber-600 dark:text-amber-500"
+                                />
                             )}
 
                             <ExportPanel
@@ -1453,16 +1460,14 @@ export default function QRGenerator({ onBack }) {
                                     Link đích: <span className="font-mono">{qrData.url}</span>
                                 </p>
                                 {!isSafeHttpUrl(qrData.url) && (
-                                    <p className="text-amber-700 dark:text-amber-400 font-semibold">
-                                        Cảnh báo: Link không phải http/https - có thể nguy hiểm!
-                                    </p>
+                                    <WarningMessage message="Cảnh báo: Link không phải http/https - có thể nguy hiểm!" />
                                 )}
                             </div>
                         )}
 
                         {scanResult && (
                             <div
-                                className={`mb-4 rounded-xl border-2 px-4 py-3 text-sm font-bold ${
+                                className={`mb-4 rounded-xl border-2 px-4 py-3 text-sm font-bold flex items-start gap-2 ${
                                     scanResult.status === 'success'
                                         ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-300 dark:border-emerald-700'
                                         : scanResult.status === 'warning'
@@ -1472,7 +1477,22 @@ export default function QRGenerator({ onBack }) {
                                 role="status"
                                 aria-live="polite"
                             >
-                                {scanResult.message}
+                                {scanResult.status === 'success' && (
+                                    <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                    </svg>
+                                )}
+                                {scanResult.status === 'warning' && (
+                                    <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                )}
+                                {scanResult.status === 'error' && (
+                                    <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                    </svg>
+                                )}
+                                <span>{scanResult.message}</span>
                             </div>
                         )}
 

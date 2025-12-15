@@ -1,10 +1,10 @@
-# QR Generator Pro
+# QR Generator
 
 Công cụ tạo và quản lý mã QR chuẩn hoá cho tài liệu, chiến dịch, sự kiện và tài sản CNTT trong hệ thống doanh nghiệp HPT – thống nhất brand, bảo mật trên nền tảng Microsoft 365.
 
 Ứng dụng được xây dựng với React và Vite, hỗ trợ nhiều loại nội dung, tùy chỉnh đầy đủ màu sắc, kích thước, logo và định dạng xuất file. Tích hợp Microsoft 365 SSO để đảm bảo chỉ nhân viên nội bộ mới có thể truy cập.
 
-![QR Generator Pro](https://img.shields.io/badge/QR-Generator%20Pro-indigo?style=for-the-badge)
+![QR Generator](https://img.shields.io/badge/QR-Generator-indigo?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-19.2.0-61DAFB?logo=react&style=flat-square)
 ![Vite](https://img.shields.io/badge/Vite-Rolldown-646CFF?logo=vite&style=flat-square)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?logo=tailwind-css&style=flat-square)

@@ -47,6 +47,7 @@ export default function ExportPanel({ format, canvasRef, svgRef, includeMargin, 
                 if (ext === 'jpg' && transparentBg) {
                     toast('JPG không hỗ trợ nền trong suốt! Đã tự động chuyển sang nền trắng. Dùng PNG nếu cần nền trong suốt.', {
                         duration: 5000,
+                        icon: '⚠️',
                     });
                 }
 

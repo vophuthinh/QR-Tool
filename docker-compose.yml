@@ -3,10 +3,26 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        VITE_AZURE_CLIENT_ID: ${VITE_AZURE_CLIENT_ID}
+        VITE_AZURE_TENANT_ID: ${VITE_AZURE_TENANT_ID}
+
     container_name: qr-generator
     ports:
-      - "3111:3111" 
+      - "3111:3111"
     restart: unless-stopped
     environment:
       - NODE_ENV=production
 
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3111"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
